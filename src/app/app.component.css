@@ -1,0 +1,103 @@
+.myform-wrapper {
+    margin: 50px;
+    width: 350px;  
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-toolbar-single-row {
+    height: auto !important;
+    background: transparent;
+
+}
+
+.myform-wrapper button {
+    width: 30%;
+}
+
+#fileUpload {
+    position: absolute;
+    z-index: 9;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    left: 0px;
+    top: 0px;
+    cursor: pointer;
+}
+
+.container {
+    width: 70%;
+    margin: auto;
+}
+
+.content-container {
+    padding: 1rem;
+    border: 1px solid;
+    margin-top: 1rem;
+}
+
+
+.content-estados {
+    margin-left: 3rem;
+    margin-top: 2rem;
+    display: flex;
+}
+
+
+.estado-columna {
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+}
+
+.estado-title {
+    color: blue;
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 0;
+}
+
+.estado-columna-content {
+    margin-top: 0.5rem;
+    border: 1px solid black;
+    padding: 0 1.4rem;
+}
+
+.content-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-table {
+    width: 50%;
+    margin-top: 2rem;
+}
+
+table {
+    width: 100%;
+}
+
+
+.mat-column-demo-position {
+    width: 32px;
+    border-right: 1px solid currentColor;
+    padding-right: 24px;
+    text-align: center;
+}
+
+.mat-column-estado, .mat-column-estadoUno, .mat-column-estadoDos  {
+    font-size: 18px;
+}
+
+.mat-column-demo-weight {
+    font-style: italic;
+}
+
+.mat-column-demo-symbol {
+    width: 32px;
+    text-align: center;
+    font-weight: bold;
+}
