@@ -10,18 +10,12 @@
     <div class="myfilebrowser">
   
       <mat-toolbar>
-  
-        <!-- Readonly Input to show File names -->
         <input matInput [(ngModel)]="myfilename" readonly name="memberContactNo" />
-  
-        <!-- Browse Button -->
         <button mat-flat-button color="primary">
           Buscar
         </button>
-  
       </mat-toolbar>
   
-      <!-- Fetch selected filed on change -->
       <input type="file" #UploadFileInput id="fileUpload" (change)="fileChangeEvent($event)" name="fileUpload"
         multiple="multiple" accept="*" />
   
@@ -30,7 +24,39 @@
   </mat-form-field>
 
   <div class="content-container">
-    <p class="text-content" *ngFor="let content of linesContent">{{content}}</p>
+    <div class="content-lines">
+      <h3>TXT Original</h3>
+      <p class="text-content" *ngFor="let content of linesContent">{{content}}</p>
+    </div>
+    <div class="content-table">
+      <h3 class="title-table">W = AFN</h3>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  
+        
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef> Estados </th>
+          <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="estadoUno">
+          <th mat-header-cell *matHeaderCellDef> a </th>
+          <td mat-cell *matCellDef="let element"> {{element.estadoUno}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="estadoDos">
+          <th mat-header-cell *matHeaderCellDef> b </th>
+          <td mat-cell *matCellDef="let element"> {{element.estadoDos}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estadoTres">
+          <th mat-header-cell *matHeaderCellDef> e </th>
+          <td mat-cell *matCellDef="let element"> {{element.estadoTres}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
   </div>
 
   <div class="content-footer">
@@ -41,8 +67,10 @@
         </div>
       </div>
     </div>
+
     <div class="content-table">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <h3 class="title-table">W = AFD</h3>
+      <table mat-table [dataSource]="dataSourceComp" class="mat-elevation-z8">
   
         
         <ng-container matColumnDef="estado">
@@ -50,21 +78,38 @@
           <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
         </ng-container>
       
-        <!-- Name Column -->
-        <ng-container matColumnDef="estadoUno">
+        <ng-container matColumnDef="estadoA">
           <th mat-header-cell *matHeaderCellDef> a </th>
-          <td mat-cell *matCellDef="let element"> {{element.estadoUno}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.estadoA}} </td>
         </ng-container>
       
-        <!-- Weight Column -->
-        <ng-container matColumnDef="estadoDos">
+        <ng-container matColumnDef="estadoB">
           <th mat-header-cell *matHeaderCellDef> b </th>
-          <td mat-cell *matCellDef="let element"> {{element.estadoDos}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.estadoB}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="composicion">
+          <th mat-header-cell *matHeaderCellDef> composicion </th>
+          <td mat-cell *matCellDef="let element"> {{element.composicion}} </td>
         </ng-container>
       
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsComp"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsComp;"></tr>
       </table>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div class="content-lines">
+      <h3>Autómata Finito Determinista</h3>
+      <p class="text-content" *ngFor="let content of linesContentDeterminista">{{content}}</p>
+    </div>
+    <div class="content-table">
+      <mat-form-field class="example-full-width" appearance="fill" >
+        <mat-label>Cadena de texto</mat-label>
+        <input matInput [ngModel]="inputModel" (ngModelChange)="changeInputModel($event)" >
+      </mat-form-field>
+      <h3 class="title-input" [ngClass]="{'error': errorInput, 'success': !errorInput}">Cadena de Aceptación {{errorInput ? 'invalida': 'valida'}}</h3>
     </div>
   </div>
 

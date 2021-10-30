@@ -35,10 +35,22 @@
 
 .content-container {
     padding: 1rem;
-    border: 1px solid;
     margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
 }
 
+.content-lines {
+    width: 45%;
+    padding: 0.5rem;
+    border: 1px solid #eae9e9;
+}
+.content-lines h3 {
+    background-color: #d0cece;
+    color: #5c5c5c;
+    margin: 0;
+    margin-bottom: 1rem;
+}
 
 .content-estados {
     margin-left: 3rem;
@@ -54,12 +66,19 @@
 }
 
 .estado-title {
-    color: blue;
+    color: #0089ff;
     font-size: 1.5rem;
     text-align: center;
     margin: 0;
 }
 
+.title-input.error{
+    color: red !important;
+}
+
+.title-input.success{
+    color: green !important;
+}
 .estado-columna-content {
     margin-top: 0.5rem;
     border: 1px solid black;
@@ -73,13 +92,14 @@
 
 .content-table {
     width: 50%;
-    margin-top: 2rem;
 }
-
+.content-table h3 {
+    margin: 0;
+    color: #0089ff;
+}
 table {
     width: 100%;
 }
-
 
 .mat-column-demo-position {
     width: 32px;
@@ -88,7 +108,7 @@ table {
     text-align: center;
 }
 
-.mat-column-estado, .mat-column-estadoUno, .mat-column-estadoDos  {
+.mat-column-estado, .mat-column-estadoUno, .mat-column-estadoDos, .mat-column-estadoTres  {
     font-size: 18px;
 }
 
