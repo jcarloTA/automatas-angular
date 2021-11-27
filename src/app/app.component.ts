@@ -32,6 +32,9 @@ export class AppComponent {
   linesVertical = [];
   linesContentDeterminista = [];
   compocisiones = [];
+  matriz:Array<any> = [];
+  estadoAceptacion = ''; 
+  contentMatrizGeneral = [];
   estadosCompociones: Array<any> = [];
 
   @ViewChild('UploadFileInput') uploadFileInput: ElementRef;
@@ -43,7 +46,6 @@ export class AppComponent {
 
   fileChangeEvent(fileInput: any) {
     if (fileInput.target.files && fileInput.target.files[0]) {
-      console.log('files', fileInput.target.files);
       var file = fileInput.target.files[0];
 
       var reader = new FileReader();
@@ -52,7 +54,6 @@ export class AppComponent {
 
         const string: any = results;
         const lines = string.split('\n');
-        console.log('lines', lines);
         this.printLines(lines);
       }.bind(this);
       reader.readAsText(file);
@@ -64,20 +65,34 @@ export class AppComponent {
   printLines(lines: any) {
     this.linesContent = lines;
     const linesVe = [];
-    console.log('print lines', lines);
     for (let i = 0; i < lines.length; i++) {
       let title = lines[i].substr(0, 2);
       title = title.replace(':', '');
       switch (title) {
         case 'Q':
         case 'F':
-        case 'i':
+        case 'i': {
+            let content = lines[i].replaceAll(title, '');
+            content = content.replaceAll('{', '');
+            content = content.replaceAll(':', '');
+            content = content.replaceAll('}', '');
+            content = content.replaceAll(' ', '');
+            let linesContent = content.split(',');
+            let linesContentP = linesContent.map((e) => `<p>${e}</p>`);
+            linesContentP = linesContentP.join('');
+            linesVe.push({
+              title: title,
+              content: linesContentP,
+            });
+            break;
+        }
         case 'A': {
           let content = lines[i].replaceAll(title, '');
           content = content.replaceAll('{', '');
           content = content.replaceAll(':', '');
           content = content.replaceAll('}', '');
           content = content.replaceAll(' ', '');
+          this.estadoAceptacion = content.trim();
           let linesContent = content.split(',');
           let linesContentP = linesContent.map((e) => `<p>${e}</p>`);
           linesContentP = linesContentP.join('');
@@ -98,7 +113,6 @@ export class AppComponent {
           let contentMatriz = content.split(';');
           content = content.replaceAll(',', '');
           let linesContent = content.split(';');
-          console.log('linesContent', linesContent);
           let estadosList = [];
           for (let i = 0; i < linesContent.length; i++) {
             let estado = linesContent[i][0];
@@ -125,7 +139,6 @@ export class AppComponent {
               });
             }
           }
-          console.log('estadosList', estadosList);
           this.dataSource = estadosList.map((e) => {
             let obj = {
               estado: e.estado,
@@ -152,6 +165,7 @@ export class AppComponent {
 
             return obj;
           });
+          this.contentMatrizGeneral = contentMatriz;
           this.printAFD(contentMatriz);
           break;
         }
@@ -165,6 +179,7 @@ export class AppComponent {
 
   printAFD(contentMatriz:any) {
     const matriz = contentMatriz.map(e => e.split(','));
+    this.matriz = matriz;
     const abs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
     let estado = matriz[0][0];
@@ -185,18 +200,14 @@ export class AppComponent {
     let composiciones: Array<any> = [nuevaComposicion];
     
     for (let i = 0; i < composiciones.length; i++) {
-      if (!composiciones[i].read) {
+      if (!composiciones[ i].read) {
         let obj = {
           estado: composiciones[i].estado,
           composicion: composiciones[i].composicion,
           estadoA: '',
           estadoB: '',
         };
-        let compociA = this.encontrarComposicion(
-          composiciones[i].composicion,
-          'a',
-          matriz
-        );
+        let compociA = this.encontrarComposicion(composiciones[i].composicion,'a',matriz );
         let existCompA = this.existeLaComposicion(compociA, composiciones);
         if (existCompA) {
           obj.estadoA = existCompA;
@@ -205,14 +216,11 @@ export class AppComponent {
           composiciones.push({
             estado: estado,
             composicion: compociA ?  compociA : '',
+            read: false,
           });
           obj.estadoA = estado;
         }
-        let compociB = this.encontrarComposicion(
-          composiciones[i].composicion,
-          'b',
-          matriz
-        );
+        let compociB = this.encontrarComposicion(composiciones[i].composicion, 'b',  matriz );
         let existCompB = this.existeLaComposicion(compociB, composiciones);
         if (existCompB) {
           obj.estadoB = existCompB;
@@ -221,30 +229,28 @@ export class AppComponent {
           composiciones.push({
             estado: estado,
             composicion: compociB ? compociB : '',
+            read: false,
+
           });
           obj.estadoB = estado;
         }
 
         this.estadosCompociones.push(obj);
         composiciones[i].read = true;
-        // this.markComposicion(composiciones[i].composicion.estado);
       }
     }
-    // this.compocisiones.push(composicion);
-    // console.log("compocisiones",this.compocisiones);
 
     this.dataSourceComp = this.estadosCompociones.map(e => ({...e, composicion: e.composicion ? e.composicion.split("").join(',') : '0'}));
-    console.log('compocisiones', composiciones);
-    console.log('estados', this.estadosCompociones);
     this.generarAutomataDeterministaFinito(this.estadosCompociones);
   }
 
   generarAutomataDeterministaFinito(estadosCompociones ) {
     try {
+      const aceptEstados = estadosCompociones.filter( e => e.composicion.endsWith(this.estadoAceptacion) == true);
       let Q = `Q: {${estadosCompociones.map(e => e.estado).join(',')}}`;
       let F = `F: {a, b} `;
       let I = `i: A`;
-      let A = `A: {${estadosCompociones.filter(e => e.composicion).map(e => e.estado).join(",")}}`
+      let A = `A: {${estadosCompociones.filter( e => e.composicion.endsWith(this.estadoAceptacion) == true).map(e => e.estado).join(",")}}`
       this.linesContentDeterminista = [Q , F , I , A];
     } catch (err) {
       console.log('err generarAutomataDeterministaFinito', err);
@@ -296,11 +302,28 @@ export class AppComponent {
     this.compocisiones = constComp;
   }
 
-  changeInputModel(event) {
-    console.log('event',event);
+  changeInputModel(text) {
+    this.validCadena(text);
   }
 
   validCadena(cadena) {
+    const cadenaList = cadena;
+    console.log("cadenaList", cadenaList);
+    console.log("cadena validar", cadena);
+    console.log("matriz", this.matriz);
+    console.log("dataSource", this.dataSource);
+    let valid = true;
+    let ultimoEstado = '';
+    let estadosAnterioresValidos = [];
+    for(let i = 0; i < cadenaList.length ; i ++) {
+      let letra = cadenaList[i];
+      
+      for(let x = 0; x < this.matriz.length; x++) {
+        if(this.matriz[1] == letra) {
+          estadosAnterioresValidos.push(this.matriz[2]);
+        }
+      }
+    }
 
   }
 
